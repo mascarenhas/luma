@@ -1,0 +1,14 @@
+#!/usr/bin/env lua51
+
+require"macro"
+
+local args = { ... }
+
+for _, arg in ipairs(args) do
+  local lib = string.match(arg, "^-l[ ]?(.+)$")
+  if lib then
+    require(lib)
+  else
+    macro.dofile(arg)
+  end
+end

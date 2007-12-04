@@ -2,28 +2,6 @@ require"lpeg"
 require"re"
 require"cosmo"
 
-local function pp(x)
-  if type(x) == "table" then
-    io.write("{ ")
-    for _, v in ipairs(x) do
-      pp(v)
-      io.write(", ")
-    end
-    for k, v in pairs(x) do
-      if type(k) ~= "number" then
-        io.write(k .. " = ")
-        pp(v)
-        io.write(", ")
-      end
-    end
-    io.write(" }")
-  else
-    io.write(" '" .. x .. "' ")
-  end
-end
-
-local global_env = _G
-
 module("macro", package.seeall)
 
 local macros = {}
@@ -73,6 +51,16 @@ end
 
 function dostring(text)
   return loadstring(expand(text))()
+end
+
+function dofile(filename)
+  local file = io.open(filename)
+  if file then
+    local contents = expand(string.gsub(file:read("*a"), "^#![^\n]", ""))
+    return loadstring(contents, filename)()
+  else
+    error("file " .. filename .. " not found")
+  end
 end
 
 local function findfile(name)
