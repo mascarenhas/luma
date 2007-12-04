@@ -24,6 +24,8 @@ function define(name, grammar, code, defs)
   macros[name] = { patt = patt, code = code } 
 end
 
+local lstring = loadstring
+
 function expand(text)
   local start = "[" * lpeg.P"="^0 * "["
   local longstring = lpeg.P(function (s, i)
@@ -33,7 +35,8 @@ function expand(text)
     p = (1 - p)^0 * p
     return lpeg.match(p, s, l)
   end)
-  longstring = #("[" * lpeg.S"[=") * (lpeg.C(longstring) / function (s) return loadstring("return " .. s)() end)
+  longstring = #("[" * lpeg.S"[=") * 
+    (lpeg.C(longstring) / function (s) return lstring("return " .. s)() end)
   local macro_use = [[ 
     macro <- luaname longstring 
   ]]
@@ -49,18 +52,26 @@ function expand(text)
   end)
 end
 
-function dostring(text)
-  return loadstring(expand(text))()
+function loadstring(text)
+  return lstring(expand(text))
 end
 
-function dofile(filename)
+function dostring(text)
+  return loadstring(text)()
+end
+
+function loadfile(filename)
   local file = io.open(filename)
   if file then
     local contents = expand(string.gsub(file:read("*a"), "^#![^\n]", ""))
-    return loadstring(contents, filename)()
+    return lstring(contents, filename)
   else
     error("file " .. filename .. " not found")
   end
+end
+
+function dofile(filename)
+  return loadfile(filename)()
 end
 
 local function findfile(name)
@@ -73,7 +84,7 @@ local function findfile(name)
   end
 end
 
-table.insert(package.loaders, 2, function (name)
+function loader(name)
   local file, filename = findfile(name)
   local ok, contents
   if file then
@@ -83,4 +94,4 @@ table.insert(package.loaders, 2, function (name)
     if not ok then return contents end
     return loadstring(contents, filename)
   end
-end)
+end
