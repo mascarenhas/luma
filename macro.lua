@@ -1,17 +1,17 @@
 require"lpeg"
 require"re"
 require"cosmo"
+require"leg.scanner"
 
 module("macro", package.seeall)
 
 local macros = {}
 
-local basic_rules = [[
-  space <- [ 
-  ]*
-  luaname <- {[a-zA-Z_][a-zA-Z_0-9]*} space
-  char <- {[a-zA-Z0-9_]} space
-]]
+local basic_rules = {
+  space = leg.scanner.IGNORED,
+  luaname = lpeg.C(leg.scanner.IDENTIFIER) * leg.scanner.IGNORED,
+  char = lpeg.C(lpeg.R("az", "AZ", "09", "__")) * leg.scanner.IGNORED
+}
 
 local function gsub (s, patt, repl)
   patt = lpeg.P(patt)
@@ -20,7 +20,8 @@ local function gsub (s, patt, repl)
 end
 
 function define(name, grammar, code, defs)
-  local patt = re.compile(grammar .. basic_rules, defs)
+  setmetatable(defs, { __index = basic_rules })
+  local patt = re.compile(grammar, defs)
   macros[name] = { patt = patt, code = code } 
 end
 
@@ -40,7 +41,9 @@ function expand(text)
   local macro_use = [[ 
     macro <- luaname longstring 
   ]]
-  local patt = re.compile(macro_use .. basic_rules, { longstring = longstring })
+  local defs = { longstring = longstring }
+  setmetatable(defs, { __index = basic_rules })
+  local patt = re.compile(macro_use, defs)
   return gsub(text, patt, function (name, arg)
     if macros[name] then
       local patt, code = macros[name].patt, macros[name].code
@@ -64,6 +67,7 @@ function loadfile(filename)
   local file = io.open(filename)
   if file then
     local contents = expand(string.gsub(file:read("*a"), "^#![^\n]*", ""))
+    file:close()
     return lstring(contents, filename)
   else
     error("file " .. filename .. " not found")
@@ -89,6 +93,7 @@ function loader(name)
   local ok, contents
   if file then
     ok, contents = pcall(file.read, file, "*a")
+    file:close()
     if not ok then return contents end
     ok, contents = pcall(expand, string.gsub(contents, "^#![^\n]*", ""))
     if not ok then return contents end
