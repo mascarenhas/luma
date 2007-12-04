@@ -15,10 +15,10 @@ local syntax = [[
 
 local defs = {
   build_classmethod = function (name, body)
-    return { name = name, body = body }
+    return { name = "_M." .. name, body = body }
   end,
   build_instancemethod = function (name, body)
-    return { name = "instance_methods:" .. name, body = body }
+    return { name = "_M.instance_methods:" .. name, body = body }
   end,
   build_extends = function (class)
     return { type = "extends", class = class }
@@ -28,7 +28,7 @@ local defs = {
   end,
   build_class = function (...)
     local defs = { ... }
-    local class = { parent = "object", mixins = {}, methods = {} }
+    local class = { parent = "", mixins = {}, methods = {} }
     for i, v in ipairs(defs) do
       if v.type == "extends" then
         class.parent = v.class
@@ -44,28 +44,30 @@ local defs = {
 }
 
 local code = [[
-  local parent = require"$parent"
-
-  instance_methods = {}
+  _M.instance_methods = _M.instance_methods or _M.methods or {}
 
   $mixins[=[
   do
     local mixin = require"$class"
     for k, v in pairs(mixin.instance_methods) do
-      instance_methods[k] = v
+      _M.instance_methods[k] = v
     end
   end
   ]=]
 
-  setmetatable(instance_methods, { __index = parent.instance_methods })
+  if "$parent" ~= "" then
+    local parent = require"$parent"
+    setmetatable(instance_methods, { __index = parent.instance_methods })
+    _M.super = parent.instance_methods
+  end
 
-  local super = parent.instance_methods
-
-  function new(...)
-    local obj = {}
-    setmetatable(obj, { __index = instance_methods })
-    if obj.initialize then obj:initialize(...) end
-    return obj
+  if not _M.new then
+    function _M.new(...)
+      local obj = {}
+      setmetatable(obj, { __index = instance_methods })
+      if obj.initialize then obj:initialize(...) end
+      return obj
+    end
   end
 
   $methods[=[

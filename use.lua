@@ -1,3 +1,4 @@
+#!/usr/bin/env lua51 luam -l using
 
 using [[
 

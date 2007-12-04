@@ -63,7 +63,7 @@ end
 function loadfile(filename)
   local file = io.open(filename)
   if file then
-    local contents = expand(string.gsub(file:read("*a"), "^#![^\n]", ""))
+    local contents = expand(string.gsub(file:read("*a"), "^#![^\n]*", ""))
     return lstring(contents, filename)
   else
     error("file " .. filename .. " not found")
@@ -90,7 +90,7 @@ function loader(name)
   if file then
     ok, contents = pcall(file.read, file, "*a")
     if not ok then return contents end
-    ok, contents = pcall(expand, string.gsub(contents, "^#![^\n]", ""))
+    ok, contents = pcall(expand, string.gsub(contents, "^#![^\n]*", ""))
     if not ok then return contents end
     return loadstring(contents, filename)
   end
