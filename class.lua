@@ -9,7 +9,7 @@ local syntax = [[
   extends <- 'extends' space luaname -> build_extends
   mixin <- 'include' space luaname -> build_mixin
   classmethod <- 'class' space 'method' space (luaname {funcbody}) -> build_classmethod space
-  instancemethod <- 'instance' space 'method' space (luaname {funcbody}) -> build_instancemethod space
+  instancemethod <- ('instance' space)? 'method' space (luaname {funcbody}) -> build_instancemethod space
   definition <- extends / mixin / classmethod / instancemethod
 ]]
 
@@ -73,5 +73,4 @@ local code = [[
   ]=]
 ]]
 
-macro.define("class", syntax, code, defs)
-
+macro.define("class_description", syntax, code, defs)

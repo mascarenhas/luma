@@ -1,6 +1,6 @@
 module("foo", package.seeall)
 
-class [[
+class_description [[
   extends bar
 
   class method baz(x, y)

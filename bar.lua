@@ -1,8 +1,8 @@
 module("bar", package.seeall)
 
-class [[
+class_description [[
 
-  instance method initialize(msg)
+  method initialize(msg)
     self.message = msg
   end
 
