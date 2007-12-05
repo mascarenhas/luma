@@ -1,4 +1,4 @@
-#!/usr/bin/env lua51 luam -l automata
+#!/usr/bin/env luma -l automaton
 
 local aut = automaton [[
   init: c -> more

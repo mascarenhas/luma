@@ -1,4 +1,4 @@
-#!/usr/bin/env lua51 luam -l class
+#!/usr/bin/env luma -l class
 
 require"foo"
 

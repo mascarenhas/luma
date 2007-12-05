@@ -1,4 +1,4 @@
-#!/usr/bin/env lua51 luam -l trycatch
+#!/usr/bin/env luma -l trycatch
 
 try [[
   print("Hello world!")

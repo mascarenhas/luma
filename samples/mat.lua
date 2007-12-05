@@ -1,3 +1,4 @@
+#!/usr/bin/env luma -l match
 
 match [=[
   subject "Hello World!"

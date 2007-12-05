@@ -1,4 +1,4 @@
-#!/usr/bin/env lua51 luam -l using
+#!/usr/bin/env luma -l using
 
 using [[
 
