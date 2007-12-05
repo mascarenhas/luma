@@ -19,5 +19,6 @@ install: $(config_file)
 	cp src/macro.lua $(LUA_DIR)
 	cp src/re.lua $(LUA_DIR)
 	cp src/cosmo.lua $(LUA_DIR)
+	grep -l "^#!" samples/*.lua | xargs chmod +x
 
 clean:
