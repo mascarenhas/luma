@@ -37,3 +37,15 @@ local code = [[
 
 macro.define("using", syntax, code, defs)
 
+macro.define_simple("import", function (args)
+                                local libname = args[1]
+                                local l = require(libname)
+                                args.funcs = {}
+                                for f, _ in pairs(l) do table.insert(args.funcs, { name = f }) end
+                                return [[
+                                  local _ = require[=[$1]=]
+                                  $funcs[=[
+                                  local $name = _[ [==[$name]==] ]
+                                  ]=]
+                                ]] 
+                              end)

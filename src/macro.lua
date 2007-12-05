@@ -2,6 +2,7 @@ require"lpeg"
 require"re"
 require"cosmo"
 require"leg.scanner"
+require"leg.parser"
 
 module("macro", package.seeall)
 
@@ -49,7 +50,11 @@ function expand(text)
       local patt, code = macros[name].patt, macros[name].code
       local data = patt:match(arg)
       if data then
-        return expand(cosmo.fill(code, data))
+        if type(code) == "string" then
+          return expand(cosmo.fill(code, data))
+        else
+          return expand(cosmo.fill(code(data), data))
+        end
       end
     end
   end)
@@ -99,4 +104,25 @@ function loader(name)
     if not ok then return contents end
     return loadstring(contents, filename)
   end
+end
+
+function define_simple(name, code)
+  local exp = lpeg.P(leg.parser.apply(lpeg.V"Exp"))
+  local syntax = [[
+    explist <- space ({exp} space (',' space {exp} space)*) -> build_explist 
+  ]]
+  local defs = {
+    build_explist = function (...)
+      local args = { ... }
+      local exps = { args = {} }
+      for i, a in ipairs(args) do
+        exps[tostring(i)] = a
+	exps[i] = a
+        exps.args[i] = { value = a }
+      end
+      return exps
+    end,
+    exp = exp
+  }
+  macro.define(name, syntax, code, defs)
 end
