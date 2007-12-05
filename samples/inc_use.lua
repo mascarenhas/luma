@@ -1,3 +1,4 @@
+#!/usr/bin/env luma -l inc
 
 local a = 2
 

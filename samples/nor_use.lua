@@ -1,3 +1,4 @@
+#!/usr/bin/env luma -l nor
 
 a, b, c, d = false, true, false, true
 

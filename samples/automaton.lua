@@ -32,7 +32,7 @@ local defs = {
 }
 
 local code = [[
-  function (input)
+  (function (input)
     local substr = string.sub
     $states[=[
       local $name
@@ -53,8 +53,7 @@ local code = [[
       end
     ]=]
     return $init(input)
-  end
-]]
+  end)]]
 
 macro.define("automaton", syntax, code, defs) 
 

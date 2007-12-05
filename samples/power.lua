@@ -1,3 +1,4 @@
+#!/usr/bin/env luma -l mkpower
 
 power3 = mk_power[[3]]
 
