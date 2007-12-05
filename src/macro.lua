@@ -124,5 +124,10 @@ function define_simple(name, code)
     end,
     exp = exp
   }
-  macro.define(name, syntax, code, defs)
+  define(name, syntax, code, defs)
 end
+
+define_simple("require_for_syntax", function (args)
+                                      require(args[1])
+                                      return ""
+                                    end)

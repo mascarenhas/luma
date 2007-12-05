@@ -1,4 +1,6 @@
-#!/usr/bin/env luma -l inc
+#!/usr/bin/env luma
+
+require_for_syntax[[inc]]
 
 local a = 2
 

@@ -1,4 +1,6 @@
-#!/usr/bin/env luma -l using
+#!/usr/bin/env luma
+
+require_for_syntax[[using]]
 
 using [[
 

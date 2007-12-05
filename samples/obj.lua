@@ -1,4 +1,6 @@
-#!/usr/bin/env luma -l class
+#!/usr/bin/env luma
+
+require_for_syntax[[class]]
 
 require"foo"
 

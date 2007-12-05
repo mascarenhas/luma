@@ -1,4 +1,6 @@
-#!/usr/bin/env luma -l trycatch
+#!/usr/bin/env luma
+
+require_for_syntax[[trycatch]]
 
 try [[
   print("Hello world!")

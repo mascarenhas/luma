@@ -1,4 +1,6 @@
-#!/usr/bin/env luma -l nor
+#!/usr/bin/env luma
+
+require_for_syntax[[nor]]
 
 a, b, c, d = false, true, false, true
 

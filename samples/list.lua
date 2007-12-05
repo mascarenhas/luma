@@ -1,4 +1,7 @@
-#!/usr/bin/env luma -l listcomp -l automaton
+#!/usr/bin/env luma
+
+require_for_syntax[[automaton]]
+require_for_syntax[[listcomp]]
 
 x = L[[i for i = 1,5]]
 

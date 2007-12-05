@@ -1,4 +1,6 @@
-#!/usr/bin/env luma -l automaton
+#!/usr/bin/env luma
+
+require_for_syntax[[automaton]]
 
 local aut = automaton [[
   init: c -> more

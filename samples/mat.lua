@@ -1,4 +1,6 @@
-#!/usr/bin/env luma -l match
+#!/usr/bin/env luma
+
+require_for_syntax[[match]]
 
 match [=[
   subject "Hello World!"
