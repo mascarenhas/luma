@@ -1,6 +1,18 @@
 #!/usr/bin/env luma
 
-require_for_syntax[[mkpower]]
+meta[==[
+
+macro.define_simple("mk_power", function (args)
+                                   args.pow = {}
+                                   for i = 1, tonumber(args[1]) do
+                                     table.insert(args.pow, 1)
+                                   end
+                                   return [[function (x)
+                                              return $pow[=[x*]=]1
+                                            end]]
+                                 end)
+
+]==]
 
 power3 = mk_power[[3]]
 

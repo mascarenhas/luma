@@ -131,3 +131,9 @@ define_simple("require_for_syntax", function (args)
                                       require(args[1])
                                       return ""
                                     end)
+
+define("meta", "{chunk}", function (c) 
+                            macro.dostring(c)
+                            return ""
+                          end,
+       { chunk = lpeg.P(leg.parser.apply(lpeg.V"Chunk")) })
