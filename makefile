@@ -10,13 +10,14 @@ $(config_file):
 	chmod +x configure
 
 install: $(config_file)
-	sed -e '1s,^#!.*,#!$(LUA_BIN),' -i bin/luma
-	sed -e '1s,^#!.*,#!$(LUA_BIN),' -i bin/expand
+	sed -e '1s,^#!.*,#!$(LUA_BIN),' bin/luma > $(BIN_DIR)/luma
+	chmod +x $(BIN_DIR)/luma
+	sed -e '1s,^#!.*,#!$(LUA_BIN),' bin/expand > bin/expand.tmp
+	mv bin/expand.tmp bin/expand
+	chmod +x bin/expand
 	mkdir -p $(LUA_DIR)
 	cp src/macro.lua $(LUA_DIR)
 	cp src/re.lua $(LUA_DIR)
 	cp src/cosmo.lua $(LUA_DIR)
-	chmod +x bin/luma
-	cp bin/luma $(BIN_DIR)
 
 clean:
