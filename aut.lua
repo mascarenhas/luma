@@ -1,6 +1,6 @@
 #!/usr/bin/env lua51 luam -l automata
 
-local aut = automata [[
+local aut = automaton [[
   init: c -> more
   more: a -> more
         d -> more

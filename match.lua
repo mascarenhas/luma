@@ -1,8 +1,8 @@
 require"lpeg"
 require"re"
 require"macro"
-require"leg.parser"
 require"leg.scanner"
+require"leg.parser"
 
 local exp = lpeg.P(leg.parser.apply(lpeg.V"Exp"))
 local chunk = lpeg.P(leg.parser.apply(lpeg.V"Chunk"))
@@ -12,7 +12,8 @@ local syntax = [[
     clauses clause_else? 'end' space) -> build_match
   clauses <- clause+ -> {}
   captures <- ({luaname (',' space luaname)*} / {""}) -> build_captures
-  clause <- ('with' space captures '<-' space {exp} space 'do' space {chunk} 
+  clause <- ('with' space captures space '<-' space
+    {exp} space 'do' space {chunk} 
     {'fallthrough'?} space) -> build_clause
   clause_else <- ('default' space {chunk}) -> build_else
 ]]

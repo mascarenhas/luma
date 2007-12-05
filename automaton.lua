@@ -56,6 +56,6 @@ local code = [[
   end
 ]]
 
-macro.define("automata", syntax, code, defs) 
+macro.define("automaton", syntax, code, defs) 
 
 

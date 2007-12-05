@@ -6,7 +6,7 @@ match [=[
     fallthrough
   with bar <- [[ "Hello Wor" {...} ]] do
     print(bar)
-  with _ <- [[ "H" .* ]] do
+  with <- [[ "H" .* ]] do
     print("strike 3")
   default
     print("default")
