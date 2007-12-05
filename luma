@@ -1,4 +1,4 @@
-#!/usr/bin/env lua51
+#!/usr/bin/env lua
 
 require"macro"
 
