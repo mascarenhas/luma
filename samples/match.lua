@@ -18,7 +18,8 @@ local syntax = [[
 
 local defs = {
   build_match = function (subj, clauses, clause_else)
-    return { subject = subj, clauses = clauses, clause_else = { clause_else } }
+    return { subject = subj, clauses = clauses, clause_else = { clause_else },
+      re = luma.gensym(), sub = luma.gensym() }
   end,
   build_clause = function (captures, patt, chunk, ft)
     if ft == "fallthrough" then ft = "" else ft = "do break end" end
@@ -36,11 +37,11 @@ local defs = {
 
 local code = [[
   do
-    local re = require"re"
-    local subject = $subject
+    local $re = require"re"
+    local $sub = $subject
     repeat
     $clauses[=[
-      local $captures = re.match(subject, $pattern)
+      local $captures = $re.match($sub, $pattern)
       if $first_cap then
         $chunk
         $fallthrough

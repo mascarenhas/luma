@@ -17,7 +17,7 @@ local defs = {
     return table.concat({ ... }, " ")
   end,
   build_comp = function (e, f)
-    return { exp = e, exp_for = f }
+    return { exp = e, exp_for = f, list = luma.gensym() }
   end,
   name = name,
   exp = exp
@@ -25,11 +25,11 @@ local defs = {
 
 local code = [[
   (function ()
-    local ___lcomp_list = {}
+    local $list = {}
     for $exp_for do
-      ___lcomp_list[#___lcomp_list + 1] = $exp
+      $list[#$list + 1] = $exp
     end
-    return ___lcomp_list
+    return $list
   end)()
 ]]
 

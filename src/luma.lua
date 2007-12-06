@@ -190,3 +190,10 @@ define("meta",
        { build_chunk = function (c)
                          return luma.loadstring(c)
                        end })
+
+local current_gensym = 0
+
+function gensym()
+  current_gensym = current_gensym + 1
+  return "___luma_sym_" .. current_gensym
+end

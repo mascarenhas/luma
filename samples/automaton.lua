@@ -25,13 +25,13 @@ local defs = {
   build_aut = function (...)
     local sts = { ... }
     local init = sts[1].name
-    return { init = init, states = sts }
+    return { init = init, states = sts, substr = luma.gensym() }
   end
 }
 
 local code = [[
   (function (input)
-    local substr = string.sub
+    local $substr = string.sub
     $states[=[
       local $name
     ]=]
@@ -40,8 +40,8 @@ local code = [[
         if #rest == 0 then
           return $final
         end
-        local c = substr(rest, 1, 1)
-        rest = substr(rest, 2, #rest)
+        local c = $substr(rest, 1, 1)
+        rest = $substr(rest, 2, #rest)
         $rules[==[
           if c == '$char' then
             return $next(rest)

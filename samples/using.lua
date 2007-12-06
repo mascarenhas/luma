@@ -9,7 +9,7 @@ local syntax = [[
 
 local defs = {
   build_using = function (...)
-    return { imports = {...} }
+    return { imports = {...}, mod = luma.gensym() }
   end,
   build_import = function (module, names)
     return { module = module, names = names }
@@ -26,12 +26,11 @@ local defs = {
 
 local code = [[
   $imports[=[
-    local _ = require("$module")
+    local $mod = require("$module")
     $names[==[
-    local $name = _["$name"]
+    local $name = $mod["$name"]
     ]==]
   ]=]
-    local _
 ]]
 
 luma.define("using", syntax, code, defs)
