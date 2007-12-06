@@ -3,14 +3,13 @@ require"lpeg"
 require"leg.scanner"
 require"leg.parser"
 
-local name = leg.scanner.IDENTIFIER
 local exp = lpeg.P(leg.parser.apply(lpeg.V"Exp"))
 
 local syntax = [[
-  comp <- (space {exp} space 'for' space { numfor / genfor } space) -> build_comp
-  numfor <- name space '=' space exp space ',' space exp space (',' space exp)?
-  genfor <- name space (',' space name)* space 'in' space
-    exp space (',' space exp)*
+  comp <- (_ {exp} _ 'for' _ { numfor / genfor } _) -> build_comp
+  numfor <- name _ '=' _ exp _ ',' _ exp _ (',' _ exp)?
+  genfor <- name _ (',' _ name)* _ 'in' _
+    exp _ (',' _ exp)*
 ]]
 
 local defs = {

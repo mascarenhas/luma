@@ -5,9 +5,9 @@ require"leg.parser"
 local chunk = lpeg.P(leg.parser.apply(lpeg.V"Chunk"))
 
 local syntax = [[
-    try <- space ({chunk} catch? finally?) -> build_try 'end'?
-    catch <- 'catch' space (luaname {chunk}) -> build_catch
-    finally <- 'finally' space {chunk} -> build_finally 
+    try <- _ ({chunk} _ catch? finally?) -> build_try 'end'? _
+    catch <- 'catch' _ ({name} _ {chunk} _) -> build_catch
+    finally <- 'finally' _ {chunk} -> build_finally _
 ]]
 
 local defs = {

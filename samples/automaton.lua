@@ -1,12 +1,10 @@
 require"macro"
 
 local syntax = [==[
-  aut <- space state+ -> build_aut
-  accept <- {'accept'} space
-  arrow <- '->' space
-  colon <- ':' space
-  rule <- accept / (char arrow luaname) -> build_rule 
-  state <- ( luaname colon rule+ -> {} ) -> build_state
+  aut <- _ state+ -> build_aut
+  char <- {['][ ]['] / .} _
+  rule <- ({'accept'} _) / (char '->' _ {name} _) -> build_rule 
+  state <- ( {name} _ ':' _ rule+ -> {} ) -> build_state
 ]==]
 
 local defs = {

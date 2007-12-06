@@ -5,11 +5,11 @@ require"leg.parser"
 local funcbody = lpeg.P(leg.parser.apply(lpeg.V"FuncBody"))
 
 local syntax = [[
-  defs <- space definition* -> build_class
-  extends <- 'extends' space luaname -> build_extends
-  mixin <- 'include' space luaname -> build_mixin
-  classmethod <- 'class' space 'method' space (luaname {funcbody}) -> build_classmethod space
-  instancemethod <- ('instance' space)? 'method' space (luaname {funcbody}) -> build_instancemethod space
+  defs <- _ definition* -> build_class
+  extends <- ('extends' _ {name} _) -> build_extends
+  mixin <- ('include' _ {name} _) -> build_mixin
+  classmethod <- 'class' _ 'method' _ ({name} _ {funcbody}) -> build_classmethod _
+  instancemethod <- ('instance' _)? 'method' _ ({name} _ {funcbody}) -> build_instancemethod _
   definition <- extends / mixin / classmethod / instancemethod
 ]]
 

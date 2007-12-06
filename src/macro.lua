@@ -1,17 +1,49 @@
 require"lpeg"
 require"re"
 require"cosmo"
-require"leg.scanner"
-require"leg.parser"
 
 module("macro", package.seeall)
 
 local macros = {}
 
+local IGNORED, STRING, LONGSTRING, SHORTSTRING, NAME, NUMBER
+
+do
+  local m = lpeg
+  local N = m.R'09'
+  local AZ = m.R('__','az','AZ','\127\255')     -- llex.c uses isalpha()
+
+  NAME = AZ * (AZ+N)^0
+
+  local number = (m.P'.' + N)^1 * (m.S'eE' * m.S'+-'^-1)^-1 * (N+AZ)^0
+  NUMBER = #(N + (m.P'.' * N)) * number
+
+  local long_brackets = #(m.P'[' * m.P'='^0 * m.P'[') * function (subject, i1)
+    local level = _G.assert( subject:match('^%[(=*)%[', i1) )
+    local _, i2 = subject:find(']'..level..']', i1, true)
+    return (i2 and (i2+1))
+  end
+
+  local multi  = m.P'--' * long_brackets
+  local single = m.P'--' * (1 - m.P'\n')^0
+
+  local COMMENT = multi + single
+  local SPACE = m.S'\n \t\r\f'
+  IGNORED = (SPACE + COMMENT)^0
+
+  SHORTSTRING = (m.P'"' * ( (m.P'\\' * 1) + (1 - (m.S'"\n\r\f')) )^0 * m.P'"') +
+                (m.P"'" * ( (m.P'\\' * 1) + (1 - (m.S"'\n\r\f")) )^0 * m.P"'")
+  LONGSTRING = long_brackets
+  STRING = SHORTSTRING + LONGSTRING
+end
+
 local basic_rules = {
-  space = leg.scanner.IGNORED,
-  luaname = lpeg.C(leg.scanner.IDENTIFIER) * leg.scanner.IGNORED,
-  char = lpeg.C(lpeg.R("az", "AZ", "09", "__")) * leg.scanner.IGNORED
+  ["_"] = IGNORED,
+  name = NAME,
+  number = NUMBER,
+  string = STRING,
+  longstring = LONGSTRING,
+  shortstring = SHORTSTRING
 }
 
 local function gsub (s, patt, repl)
@@ -22,31 +54,20 @@ end
 
 function define(name, grammar, code, defs)
   setmetatable(defs, { __index = basic_rules })
-  local patt = re.compile(grammar, defs)
+  local patt = re.compile(grammar, defs) * (-1)
   macros[name] = { patt = patt, code = code } 
 end
 
 local lstring = loadstring
 
 function expand(text)
-  local start = "[" * lpeg.P"="^0 * "["
-  local longstring = lpeg.P(function (s, i)
-    local l = lpeg.match(start, s, i)
-    if not l then return nil end
-    local p = lpeg.P("]" .. string.rep("=", l - i - 2) .. "]")
-    p = (1 - p)^0 * p
-    return lpeg.match(p, s, l)
-  end)
-  longstring = #("[" * lpeg.S"[=") * 
-    (lpeg.C(longstring) / function (s) return lstring("return " .. s)() end)
   local macro_use = [[ 
-    macro <- luaname longstring 
+    macro <- {name} _ {longstring} 
   ]]
-  local defs = { longstring = longstring }
-  setmetatable(defs, { __index = basic_rules })
-  local patt = re.compile(macro_use, defs)
+  local patt = re.compile(macro_use, basic_rules)
   return gsub(text, patt, function (name, arg)
     if macros[name] then
+      arg = loadstring("return " .. arg)()
       local patt, code = macros[name].patt, macros[name].code
       local data = patt:match(arg)
       if data then
@@ -106,34 +127,40 @@ function loader(name)
   end
 end
 
-function define_simple(name, code)
-  local exp = lpeg.P(leg.parser.apply(lpeg.V"Exp"))
-  local syntax = [[
-    explist <- space ({exp} space (',' space {exp} space)*) -> build_explist 
-  ]]
-  local defs = {
-    build_explist = function (...)
-      local args = { ... }
-      local exps = { args = {} }
-      for i, a in ipairs(args) do
-        exps[tostring(i)] = a
-	exps[i] = a
-        exps.args[i] = { value = a }
-      end
-      return exps
-    end,
-    exp = exp
-  }
-  define(name, syntax, code, defs)
+do
+  local ok, parser = pcall(require, "leg.parser")
+  if ok then
+    function define_simple(name, code)
+      local exp = lpeg.P(parser.apply(lpeg.V"Exp"))
+      local syntax = [[
+        explist <- _ ({exp} _ (',' _ {exp} _)*) -> build_explist 
+      ]]
+      local defs = {
+        build_explist = function (...)
+          local args = { ... }
+          local exps = { args = {} }
+          for i, a in ipairs(args) do
+            exps[tostring(i)] = a
+	    exps[i] = a
+            exps.args[i] = { value = a }
+          end
+          return exps
+        end,
+        exp = exp
+      }
+      define(name, syntax, code, defs)
+    end
+
+    define_simple("require_for_syntax", function (args)
+                                          require(args[1])
+                                          return ""
+                                        end)
+
+    define("meta", "{chunk}", function (c) 
+                                macro.dostring(c)
+                                return ""
+                              end,
+           { chunk = lpeg.P(parser.apply(lpeg.V"Chunk")) })
+  end
 end
 
-define_simple("require_for_syntax", function (args)
-                                      require(args[1])
-                                      return ""
-                                    end)
-
-define("meta", "{chunk}", function (c) 
-                            macro.dostring(c)
-                            return ""
-                          end,
-       { chunk = lpeg.P(leg.parser.apply(lpeg.V"Chunk")) })

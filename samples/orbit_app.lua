@@ -1,3 +1,5 @@
+require_for_syntax[[orbit_dsl]]
+
 require"orbit"
 
 module("hello", package.seeall, orbit.app)

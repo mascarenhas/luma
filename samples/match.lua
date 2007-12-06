@@ -8,20 +8,15 @@ local exp = lpeg.P(leg.parser.apply(lpeg.V"Exp"))
 local chunk = lpeg.P(leg.parser.apply(lpeg.V"Chunk"))
 
 local syntax = [[
-  match <- space ('subject' space {exp} space 
-    clauses clause_else? 'end' space) -> build_match
+  match <- _ ('subject' _ {exp} _ clauses clause_else? 'end' _) -> build_match
   clauses <- clause+ -> {}
-  captures <- ({luaname (',' space luaname)*} / {""}) -> build_captures
-  clause <- ('with' space captures space '<-' space
-    {exp} space 'do' space {chunk} 
-    {'fallthrough'?} space) -> build_clause
-  clause_else <- ('default' space {chunk}) -> build_else
+  captures <- ({name _ (',' _ name _)*} / {""})
+  clause <- ('with' _ captures _ '<-' _ {exp} _ 'do' _ {chunk} _ 
+    {'fallthrough'?} _) -> build_clause
+  clause_else <- ('default' _ {chunk} _) -> build_else
 ]]
 
 local defs = {
-  build_captures = function (caps)
-    return caps
-  end,
   build_match = function (subj, clauses, clause_else)
     return { subject = subj, clauses = clauses, clause_else = { clause_else } }
   end,

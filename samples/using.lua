@@ -1,11 +1,10 @@
 require"macro"
 
 local syntax = [[
-  using <- space import+ -> build_using
-  name <- [_a-zA-Z][_a-zA-Z0-9]+
-  module <- {name ('.' name)*} space
-  namelist <- ({name} space (',' space {name} space)*) -> build_namelist
-  import <- ('from' space module 'import' space namelist) -> build_import
+  using <- _ import+ -> build_using
+  module <- {name ('.' name)*} _
+  namelist <- ({name} _ (',' _ {name} _)*) -> build_namelist
+  import <- ('from' _ module 'import' _ namelist) -> build_import
 ]]
 
 local defs = {
