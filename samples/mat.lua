@@ -2,7 +2,7 @@
 
 require_for_syntax[[match]]
 
-match [=[
+match [[
   subject "Hello World!"
   with foo <- [[ "Hello" {.+} ]] do
     print(foo)
@@ -14,5 +14,5 @@ match [=[
   default
     print("default")
   end
-]=]
+]]
 

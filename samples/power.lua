@@ -1,6 +1,6 @@
 #!/usr/bin/env luma
 
-meta[==[
+meta[[
 
 luma.define_simple("mk_power", function (args)
                                    args.pow = {}
@@ -12,7 +12,7 @@ luma.define_simple("mk_power", function (args)
                                             end]]
                                  end)
 
-]==]
+]]
 
 power3 = mk_power[[3]]
 

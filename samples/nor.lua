@@ -1,10 +1,10 @@
 #!/usr/bin/env luma
 
-meta [=[
+meta [[
 
 luma.define_simple("nor", "not ($args[[($value) or ]] false)")
 
-]=]
+]]
 
 a, b, c, d = false, true, false, true
 

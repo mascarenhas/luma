@@ -9,6 +9,14 @@ local macros = {}
 local IGNORED, STRING, LONGSTRING, SHORTSTRING, NAME, NUMBER, BALANCED
 
 do
+  local ok, parser = pcall(require, "leg.parser")
+  if ok then
+    parser.rules.Args = re.compile("balanced <- '[[' ((&'[[' balanced) / (!']]' .))* ']]'") + 
+      parser.rules.Args
+  end
+end
+
+do
   local m = lpeg
   local N = m.R'09'
   local AZ = m.R('__','az','AZ','\127\255')     -- llex.c uses isalpha()
@@ -68,13 +76,14 @@ end
 local lstring = loadstring
 
 function expand(text, filename)
-  local macro_use = [[ 
-    macro <- {name} _ {longstring} 
-  ]]
+  local macro_use = [=[
+    macro <- {name} _ {balanced} 
+    balanced <- '[[' ((&'[[' balanced) / (!']]' .))* ']]'
+  ]=]
   local patt = re.compile(macro_use, basic_rules)
   return gsub(text, patt, function (name, arg)
     if macros[name] then
-      arg = loadstring("return " .. arg)()
+      arg = string.sub(arg, 3, #arg - 2)
       local patt, code = macros[name].patt, macros[name].code
       local data, err = patt:match(arg)
       if data then

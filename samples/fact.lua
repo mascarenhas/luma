@@ -1,6 +1,6 @@
 #!/usr/bin/env luma
 
-meta [=[
+meta [[
 
 local function fact(n)
   n = tonumber(n)
@@ -14,7 +14,7 @@ end
 luma.define_simple("fact", function (args)
                               return fact(args[1])
                             end)
-]=]
+]]
 
 print(fact [[ 3 ]])
 
