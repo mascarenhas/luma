@@ -3,9 +3,9 @@
 require_for_syntax[[automaton]]
 require_for_syntax[[listcomp]]
 
-x = L[[i for i = 1,5]]
+x = L[[i | i <- 1,5]]
 
-y = L[[L[=[j for j=1,3]=] for i=1,3]]
+y = L[[L[=[j | j <- 1,3]=] | i <- 1,3]]
 
 print(unpack(x))
 
@@ -15,7 +15,6 @@ lines = L[[tostring(automaton[=[init: c -> more
                                 more: a -> more
                                       d -> more
                                       r -> finish
-                                finish: accept]=](line)) 
-           for line in io.lines()]]
+                                finish: accept]=](line)) | line <- io.lines()]]
 
 print(table.concat(lines,"\n"))
