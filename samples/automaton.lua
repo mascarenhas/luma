@@ -2,7 +2,7 @@ require"luma"
 
 local syntax = [==[
   aut <- _ state+ -> build_aut
-  char <- {['][ ]['] / .} _
+  char <- ([']{[ ]}['] / {.}) _
   rule <- ({'accept'} _) / (char '->' _ {name} _) -> build_rule 
   state <- ( {name} _ ':' _ rule+ -> {} ) -> build_state
 ]==]

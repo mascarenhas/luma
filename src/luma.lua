@@ -67,7 +67,7 @@ end
 
 local lstring = loadstring
 
-function expand(text)
+function expand(text, filename)
   local macro_use = [[ 
     macro <- {name} _ {longstring} 
   ]]
@@ -76,13 +76,16 @@ function expand(text)
     if macros[name] then
       arg = loadstring("return " .. arg)()
       local patt, code = macros[name].patt, macros[name].code
-      local data = patt:match(arg)
+      local data, err = patt:match(arg)
       if data then
         if type(code) == "string" then
-          return expand(cosmo.fill(code, data))
+          return expand((cosmo.fill(code, data)), filename)
         else
-          return expand(cosmo.fill(code(data), data))
+          return expand((cosmo.fill(code(data), data)), filename)
         end
+      else
+        filename = filename or ("string: " .. text)
+        error("parse error on macro " .. name .. ", file " .. filename)
       end
     end
   end)
@@ -99,7 +102,7 @@ end
 function loadfile(filename)
   local file = io.open(filename)
   if file then
-    local contents = expand(string.gsub(file:read("*a"), "^#![^\n]*", ""))
+    local contents = expand(string.gsub(file:read("*a"), "^#![^\n]*", ""), filename)
     file:close()
     return lstring(contents, filename)
   else
@@ -128,7 +131,7 @@ function loader(name)
     ok, contents = pcall(file.read, file, "*a")
     file:close()
     if not ok then return contents end
-    ok, contents = pcall(expand, string.gsub(contents, "^#![^\n]*", ""))
+    ok, contents = pcall(expand, string.gsub(contents, "^#![^\n]*", ""), filename)
     if not ok then return contents end
     return lstring(contents, filename)
   end
