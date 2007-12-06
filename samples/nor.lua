@@ -2,7 +2,7 @@
 
 meta [=[
 
-macro.define_simple("nor", "not ($args[[($value) or ]] false)")
+luma.define_simple("nor", "not ($args[[($value) or ]] false)")
 
 ]=]
 

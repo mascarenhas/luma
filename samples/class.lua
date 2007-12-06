@@ -1,5 +1,5 @@
 require"lpeg"
-require"macro"
+require"luma"
 require"leg.parser"
 
 local funcbody = lpeg.P(leg.parser.apply(lpeg.V"FuncBody"))
@@ -75,4 +75,4 @@ local code = [[
   ]=]
 ]]
 
-macro.define("class_description", syntax, code, defs)
+luma.define("class_description", syntax, code, defs)

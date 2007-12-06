@@ -1,4 +1,4 @@
-require"macro"
+require"luma"
 require"lpeg"
 require"leg.scanner"
 require"leg.parser"
@@ -33,5 +33,5 @@ local code = [[
   end)()
 ]]
 
-macro.define("L", syntax, code, defs)
+luma.define("L", syntax, code, defs)
 

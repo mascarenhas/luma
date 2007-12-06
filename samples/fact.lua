@@ -11,7 +11,7 @@ local function fact(n)
   return a
 end
 
-macro.define_simple("fact", function (args)
+luma.define_simple("fact", function (args)
                               return fact(args[1])
                             end)
 ]=]

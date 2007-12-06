@@ -1,4 +1,4 @@
-require"macro"
+require"luma"
 
 local syntax = [[
   using <- _ import+ -> build_using
@@ -34,9 +34,9 @@ local code = [[
     local _
 ]]
 
-macro.define("using", syntax, code, defs)
+luma.define("using", syntax, code, defs)
 
-macro.define_simple("import", function (args)
+luma.define_simple("import", function (args)
                                 local libname = args[1]
                                 local l = require(libname)
                                 args.funcs = {}

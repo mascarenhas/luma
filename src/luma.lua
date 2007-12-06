@@ -2,11 +2,11 @@ require"lpeg"
 require"re"
 require"cosmo"
 
-module("macro", package.seeall)
+module("luma", package.seeall)
 
 local macros = {}
 
-local IGNORED, STRING, LONGSTRING, SHORTSTRING, NAME, NUMBER
+local IGNORED, STRING, LONGSTRING, SHORTSTRING, NAME, NUMBER, BALANCED
 
 do
   local m = lpeg
@@ -35,6 +35,12 @@ do
                 (m.P"'" * ( (m.P'\\' * 1) + (1 - (m.S"'\n\r\f")) )^0 * m.P"'")
   LONGSTRING = long_brackets
   STRING = SHORTSTRING + LONGSTRING
+ 
+  BALANCED = re.compile[[
+    balanced <- balanced_par / balanced_bra
+    balanced_par <- '(' ([^(){}] / balanced)* ')'
+    balanced_bra <- '{' ([^(){}] / balanced)* '}'
+  ]]
 end
 
 local basic_rules = {
@@ -53,6 +59,7 @@ local function gsub (s, patt, repl)
 end
 
 function define(name, grammar, code, defs)
+  defs = defs or {}
   setmetatable(defs, { __index = basic_rules })
   local patt = re.compile(grammar, defs) * (-1)
   macros[name] = { patt = patt, code = code } 
@@ -123,44 +130,51 @@ function loader(name)
     if not ok then return contents end
     ok, contents = pcall(expand, string.gsub(contents, "^#![^\n]*", ""))
     if not ok then return contents end
-    return loadstring(contents, filename)
+    return lstring(contents, filename)
   end
 end
 
-do
+function define_simple(name, code)
   local ok, parser = pcall(require, "leg.parser")
+  local exp
   if ok then
-    function define_simple(name, code)
-      local exp = lpeg.P(parser.apply(lpeg.V"Exp"))
-      local syntax = [[
-        explist <- _ ({exp} _ (',' _ {exp} _)*) -> build_explist 
-      ]]
-      local defs = {
-        build_explist = function (...)
-          local args = { ... }
-          local exps = { args = {} }
-          for i, a in ipairs(args) do
-            exps[tostring(i)] = a
-	    exps[i] = a
-            exps.args[i] = { value = a }
-          end
-          return exps
-        end,
-        exp = exp
-      }
-      define(name, syntax, code, defs)
-    end
-
-    define_simple("require_for_syntax", function (args)
-                                          require(args[1])
-                                          return ""
-                                        end)
-
-    define("meta", "{chunk}", function (c) 
-                                macro.dostring(c)
-                                return ""
-                              end,
-           { chunk = lpeg.P(parser.apply(lpeg.V"Chunk")) })
+    exp = lpeg.P(parser.apply(lpeg.V"Exp"))
+  else
+    exp = BALANCED + STRING + NAME + NUMBER
   end
+  local syntax = [[
+    explist <- _ ({exp} _ (',' _ {exp} _)*) -> build_explist 
+  ]]
+  local defs = {
+    build_explist = function (...)
+      local args = { ... }
+      local exps = { args = {} }
+      for i, a in ipairs(args) do
+        exps[tostring(i)] = a
+        exps[i] = a
+        exps.args[i] = { value = a }
+      end
+      return exps
+    end,
+    exp = exp
+  }
+  define(name, syntax, code, defs)
 end
 
+define("require_for_syntax",
+       "{name} _ (',' _ {name} _)*",
+       function (...)
+         for _, m in ipairs({ ... }) do
+           require(m)
+         end
+         return ""
+       end)
+
+define("meta", 
+       "{.*} -> build_chunk",
+       function (c)
+         return c() or ""
+       end,
+       { build_chunk = function (c)
+                         return luma.loadstring(c)
+                       end })

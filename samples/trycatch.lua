@@ -1,5 +1,5 @@
 require"lpeg"
-require"macro"
+require"luma"
 require"leg.parser"
 
 local chunk = lpeg.P(leg.parser.apply(lpeg.V"Chunk"))
@@ -49,4 +49,4 @@ local code = [[
   end
 ]]
 
-macro.define("try", syntax, code, defs)
+luma.define("try", syntax, code, defs)

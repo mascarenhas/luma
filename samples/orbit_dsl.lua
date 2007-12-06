@@ -1,5 +1,5 @@
 require"lpeg"
-require"macro"
+require"luma"
 require"leg.parser"
 require"leg.scanner"
 
@@ -95,4 +95,4 @@ local code = [[
 
 ]]
 
-macro.define("orbit_application", syntax, code, defs)
+luma.define("orbit_application", syntax, code, defs)

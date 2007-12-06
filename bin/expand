@@ -1,8 +1,8 @@
-#!/usr/local/bin/lua51
+#!/usr/bin/lua
 
-require"macro"
+require"luma"
 
-table.insert(package.loaders, 2, macro.loader)
+table.insert(package.loaders, 2, luma.loader)
 
 local args = { ... }
 
@@ -21,7 +21,7 @@ for _, arg in ipairs(args) do
     else
       local file = io.open(arg)
       local text = file:read("*a")
-      print(macro.expand(text))
+      print(luma.expand(text))
       file:close()
     end
   end

@@ -2,7 +2,7 @@
 
 meta[==[
 
-macro.define_simple("mk_power", function (args)
+luma.define_simple("mk_power", function (args)
                                    args.pow = {}
                                    for i = 1, tonumber(args[1]) do
                                      table.insert(args.pow, 1)

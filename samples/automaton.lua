@@ -1,4 +1,4 @@
-require"macro"
+require"luma"
 
 local syntax = [==[
   aut <- _ state+ -> build_aut
@@ -53,6 +53,6 @@ local code = [[
     return $init(input)
   end)]]
 
-macro.define("automaton", syntax, code, defs) 
+luma.define("automaton", syntax, code, defs) 
 
 
