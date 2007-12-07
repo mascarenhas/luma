@@ -19,7 +19,6 @@ local defs = {
   build_comp = function (e, f)
     return { exp = e, exp_for = f, list = luma.gensym() }
   end,
-  name = name,
   exp = exp
 }
 
