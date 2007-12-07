@@ -7,6 +7,8 @@ class_description [[
     return x + y
   end
 
+  print("Bah! Humbug")
+
   instance method say(x)
     if self.message then
       return self.message .. " " .. x

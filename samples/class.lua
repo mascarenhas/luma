@@ -3,6 +3,7 @@ require"luma"
 require"leg.parser"
 
 local funcbody = lpeg.P(leg.parser.apply(lpeg.V"FuncBody"))
+local stat = lpeg.P(leg.parser.apply(lpeg.V"Stat"))
 
 local syntax = [[
   defs <- _ definition* -> build_class
@@ -10,15 +11,15 @@ local syntax = [[
   mixin <- ('include' _ {name} _) -> build_mixin
   classmethod <- 'class' _ 'method' _ ({name} _ {funcbody}) -> build_classmethod _
   instancemethod <- ('instance' _)? 'method' _ ({name} _ {funcbody}) -> build_instancemethod _
-  definition <- extends / mixin / classmethod / instancemethod
+  definition <- extends / mixin / classmethod / instancemethod / ({stat} _)
 ]]
 
 local defs = {
   build_classmethod = function (name, body)
-    return { name = "_M." .. name, body = body }
+    return { type = "method", name = "function _M." .. name, body = body }
   end,
   build_instancemethod = function (name, body)
-    return { name = "_M.instance_methods:" .. name, body = body }
+    return { type = "method", name = "function _M.instance_methods:" .. name, body = body }
   end,
   build_extends = function (class)
     return { type = "extends", class = class }
@@ -30,7 +31,9 @@ local defs = {
     local defs = { ... }
     local class = { parent = "", mixins = {}, methods = {} }
     for i, v in ipairs(defs) do
-      if v.type == "extends" then
+      if type(v) == "string" then
+        table.insert(class.methods, { type = "stat", name = v, body = "" })
+      elseif v.type == "extends" then
         class.parent = v.class
       elseif v.type == "mixin" then
         table.insert(class.mixins, { class = v.class })
@@ -40,7 +43,8 @@ local defs = {
     end
     return class
   end,
-  funcbody = funcbody
+  funcbody = funcbody,
+  stat = stat
 }
 
 local code = [[
@@ -71,7 +75,7 @@ local code = [[
   end
 
   $methods[=[
-  function $name $body
+  $name $body
   ]=]
 ]]
 
