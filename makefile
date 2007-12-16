@@ -16,9 +16,10 @@ install: $(config_file)
 	mv bin/expand.tmp bin/expand
 	chmod +x bin/expand
 	mkdir -p $(LUA_DIR)
+	mkdir -p $(LUA_DIR)/luma
 	cp src/luma.lua $(LUA_DIR)
-	cp src/re.lua $(LUA_DIR)
-	cp src/cosmo.lua $(LUA_DIR)
+	cp src/re.lua $(LUA_DIR)/luma
+	cp src/cosmo.lua $(LUA_DIR)/luma
 	grep -l "^#!" samples/*.lua | xargs chmod +x
 
 clean:

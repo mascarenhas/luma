@@ -1,5 +1,7 @@
 #!/usr/local/bin/lua51
 
+pcall(require, "luarocks.require")
+
 require"luma"
 
 table.insert(package.loaders, 2, luma.loader)

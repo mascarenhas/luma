@@ -6,7 +6,7 @@ using [[
 
 from math import random, pow
 
-from cosmo import fill
+from luma.cosmo import fill
 
 ]]
 

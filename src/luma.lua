@@ -1,6 +1,6 @@
 require"lpeg"
-require"re"
-require"cosmo"
+local re = require"luma.re"
+local cosmo = require"luma.cosmo"
 
 module("luma", package.seeall)
 

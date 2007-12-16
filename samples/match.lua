@@ -1,8 +1,9 @@
 require"lpeg"
-require"re"
 require"luma"
 require"leg.scanner"
 require"leg.parser"
+
+local re = require"luma.re"
 
 local exp = lpeg.P(leg.parser.apply(lpeg.V"Exp"))
 local chunk = lpeg.P(leg.parser.apply(lpeg.V"Chunk"))

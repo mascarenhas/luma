@@ -1,5 +1,5 @@
 
-module("cosmo", package.seeall)
+module("luma.cosmo", package.seeall)
 
 
 local StringBuffer = {
@@ -55,7 +55,7 @@ Cosmo = {
                               local vals = iterator
 			      iterator = function ()
                                 for _, v in ipairs(vals) do
-                                  cosmo.yield(v)
+                                  yield(v)
                                 end
                               end 
 			    elseif not (type(iterator) == "function")  then
