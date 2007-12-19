@@ -24,7 +24,7 @@ build = {
    type = "make",
    build_pass = true,
    install_variables = {
-     LUA_BIN = ,
+     LUA_BIN = "/usr/bin/env lua",
      LUA_DIR = "$(LUADIR)",
      BIN_DIR = "$(BINDIR)"
    }
