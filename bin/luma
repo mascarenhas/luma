@@ -2,9 +2,16 @@
 
 pcall(require, "luarocks.require")
 
+local _G = _G
+
 require"luma"
 
 table.insert(package.loaders, 2, luma.loader)
+
+_G.loadfile = luma.loadfile
+_G.dofile = luma.dofile
+_G.loadstring = luma.loadstring
+_G.dostring = luma.dostring
 
 local args = { ... }
 

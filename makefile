@@ -26,6 +26,11 @@ install-rocks: install
 	cp samples/*.lua $(PREFIX)/samples
 	mkdir -p $(PREFIX)/doc
 	cp doc/* $(PREFIX)/doc
+	mkdir -p $(PREFIX)/tests
+	cp tests/* $(PREFIX)/tests
 	echo "Go to $(PREFIX) for samples and docs!"
+
+test:
+	cd tests && luma test.lua
 
 clean:

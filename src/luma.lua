@@ -105,7 +105,8 @@ function loadstring(text)
 end
 
 function dostring(text)
-  return loadstring(text)()
+  local ok, f, err = pcall(loadstring, text)
+  if ok and f then return f() else error(f or err, 2) end
 end
 
 function loadfile(filename)
@@ -115,12 +116,13 @@ function loadfile(filename)
     file:close()
     return lstring(contents, filename)
   else
-    error("file " .. filename .. " not found")
+    error("file " .. filename .. " not found", 2)
   end
 end
 
 function dofile(filename)
-  return loadfile(filename)()
+  local ok, f, err = pcall(loadfile, filename)
+  if ok and f then return f() else error(f or err, 2) end
 end
 
 local function findfile(name)
