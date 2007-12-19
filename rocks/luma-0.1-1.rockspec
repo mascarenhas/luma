@@ -1,6 +1,6 @@
 package = "Luma"
 
-version = "0.1"
+version = "0.1-1"
 
 description = {
   summary = "Lpeg-based macro system for Lua",
@@ -23,7 +23,9 @@ source = {
 build = {
    type = "make",
    build_pass = true,
+   install_target = "install-rocks",
    install_variables = {
+     PREFIX  = "$(PREFIX)",
      LUA_BIN = "/usr/bin/env lua",
      LUA_DIR = "$(LUADIR)",
      BIN_DIR = "$(BINDIR)"

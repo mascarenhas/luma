@@ -12,14 +12,20 @@ $(config_file):
 install: $(config_file)
 	sed -e '1s,^#!.*,#!$(LUA_BIN),' bin/luma > $(BIN_DIR)/luma
 	chmod +x $(BIN_DIR)/luma
-	sed -e '1s,^#!.*,#!$(LUA_BIN),' bin/expand > bin/expand.tmp
-	mv bin/expand.tmp bin/expand
-	chmod +x bin/expand
+	sed -e '1s,^#!.*,#!$(LUA_BIN),' bin/expand > $(BIN_DIR)/luma-expand
+	chmod +x $(BIN_DIR)/luma-expand
 	mkdir -p $(LUA_DIR)
 	mkdir -p $(LUA_DIR)/luma
 	cp src/luma.lua $(LUA_DIR)
 	cp src/re.lua $(LUA_DIR)/luma
 	cp src/cosmo.lua $(LUA_DIR)/luma
 	grep -l "^#!" samples/*.lua | xargs chmod +x
+
+install-rocks: install
+	mkdir -p $(PREFIX)/samples
+	cp samples/*.lua $(PREFIX)/samples
+	mkdir -p $(PREFIX)/doc
+	cp doc/* $(PREFIX)/doc
+	echo "Go to $(PREFIX) for samples and docs!"
 
 clean:
