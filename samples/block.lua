@@ -2,14 +2,22 @@
 
 require_for_syntax[[block_func]]
 
-foo = block_func [[ (s, block)
-  local x = {}  
-  function x:print(m)
-    print(m .. " " .. s .. "!")
+map = block_func [[ (tab, block)
+  local list = {}
+  for _, v in ipairs(tab) do
+    list[#list + 1] = block(v)
   end
-  block(x)
+  return list
 ]]
 
-foo("World") with [[ (x)
-  x:print("Hello")
+each = block_func [[ (tab, block)
+  for _, v in ipairs(tab) do block(v) end
+]]
+
+l = map{ 1, 2, 3 } with [[ (x)
+  return x * 2
+]]
+
+each(l) with [[ (x)
+  print(x)
 ]]

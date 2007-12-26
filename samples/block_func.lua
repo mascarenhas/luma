@@ -39,15 +39,13 @@ setmetatable(block_func_defs, { __index = common_defs })
 
 with_code = [[(function ($args)
   $body
-end)
-]]
+end)]]
 
 block_func_code = [[function ($args)
   return function ($block)
     $body
   end
-end
-]]
+end]]
 
 luma.define("with", syntax, with_code, with_defs)
 luma.define("block_func", syntax, block_func_code, block_func_defs)
