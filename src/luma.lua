@@ -68,8 +68,14 @@ end
 
 function define(name, grammar, code, defs)
   defs = defs or {}
-  setmetatable(defs, { __index = basic_rules })
-  local patt = re.compile(grammar, defs) * (-1)
+  re_defs = {}
+  setmetatable(re_defs, { __index = function (t, k)
+                		      local v = defs[k]
+				      if not v then v = basic_rules[k] end
+                                      rawset(t, k, v)
+                                      return v
+                                    end })
+  local patt = re.compile(grammar, re_defs) * (-1)
   macros[name] = { patt = patt, code = code } 
 end
 

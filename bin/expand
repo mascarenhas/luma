@@ -1,4 +1,4 @@
-#!/usr/local/bin/lua51
+#!/usr/bin/lua
 
 pcall(require, "luarocks.require")
 
