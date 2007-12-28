@@ -182,7 +182,7 @@ function define_simple(name, code)
 end
 
 define("require_for_syntax",
-       "{name} _ (',' _ {name} _)*",
+       "_ {name} _ (',' _ {name} _)*",
        function (...)
          for _, m in ipairs({ ... }) do
            require(m)
