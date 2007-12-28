@@ -25,9 +25,9 @@ install-rocks: install
 	mkdir -p $(PREFIX)/samples
 	cp samples/*.lua $(PREFIX)/samples
 	mkdir -p $(PREFIX)/doc
-	cp doc/* $(PREFIX)/doc
+	cp -r doc/* $(PREFIX)/doc
 	mkdir -p $(PREFIX)/tests
-	cp tests/* $(PREFIX)/tests
+	cp -r tests/* $(PREFIX)/tests
 	echo "Go to $(PREFIX) for samples and docs!"
 
 test:
