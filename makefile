@@ -33,4 +33,9 @@ install-rocks: install
 test:
 	cd tests && luma test.lua
 
+paper:
+	cd doc && pandoc -f markdown -t latex -B luma-paper-header.tex \
+	   -A luma-paper-footer.tex luma-paper.pdc \
+           | utf8tolatin1 > luma-paper.tex
+
 clean:
