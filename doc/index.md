@@ -16,7 +16,7 @@ This is the first public release of Luma, version 0.1.
 
 ## Download
 
-Get Luma from its [LuaForge](http://luaforge.net/projects/luma) page.
+Get Luma from [LuaRocks](http://luarocks.org) via the *luma* package, or from its [LuaForge](http://luaforge.net/projects/luma) page.
 
 ## History
 
