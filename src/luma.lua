@@ -76,6 +76,9 @@ function define(name, grammar, code, defs)
                                       return v
                                     end })
   local patt = re.compile(grammar, re_defs) * (-1)
+  if type(code) == "string" then
+    code = cosmo.compile(code, true)
+  end
   macros[name] = { patt = patt, code = code } 
 end
 
@@ -93,11 +96,7 @@ function expand(text, filename)
       local patt, code = macros[name].patt, macros[name].code
       local data, err = patt:match(arg)
       if data then
-        if type(code) == "string" then
-          return expand((cosmo.fill(code, data)), filename)
-        else
-          return expand((cosmo.fill(code(data), data)), filename)
-        end
+        return expand((cosmo.fill(code(data), data)), filename)
       else
         filename = filename or ("string: " .. text)
         error("parse error on macro " .. name .. ", file " .. filename)

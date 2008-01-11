@@ -42,7 +42,7 @@ local code = [[
     local $sub = $subject
     repeat
     $clauses[=[
-      local $captures = $re.match($sub, $pattern)
+      local $captures = $re["match"]($sub, $pattern)
       if $first_cap then
         $chunk
         $fallthrough
