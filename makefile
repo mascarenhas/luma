@@ -33,6 +33,14 @@ install-rocks: install
 test:
 	cd tests && luma test.lua
 
+dist:
+	darcs dist -d luma-current
+	mv luma-current.tar.gz ..
+
+gen_dist:
+	darcs push 139.82.100.4:public_html/luma/current
+	ssh 139.82.100.4 "cd public_html/luma/current && make dist"
+
 paper:
 	cd doc/paper && pandoc -f markdown -t latex -B luma-paper-header.tex \
 	   -A luma-paper-footer.tex luma-paper.pdc \
