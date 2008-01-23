@@ -5,7 +5,7 @@ meta[[
 luma.define_simple("mk_power", function (args)
                                    args.pow = {}
                                    for i = 1, tonumber(args[1]) do
-                                     table.insert(args.pow, 1)
+                                     table.insert(args.pow, {})
                                    end
                                    return [[function (x)
                                               return $pow[=[x*]=]1

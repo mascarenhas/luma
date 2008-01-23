@@ -1,6 +1,6 @@
 require"lpeg"
 local re = require"luma.re"
-local cosmo = require"luma.cosmo"
+local cosmo = require"template.cosmo"
 
 module("luma", package.seeall)
 
@@ -77,7 +77,7 @@ function define(name, grammar, code, defs)
                                     end })
   local patt = re.compile(grammar, re_defs) * (-1)
   if type(code) == "string" then
-    code = cosmo.compile(code, true)
+    code = cosmo.compile(code)
   end
   macros[name] = { patt = patt, code = code } 
 end
@@ -96,7 +96,7 @@ function expand(text, filename)
       local patt, code = macros[name].patt, macros[name].code
       local data, err = patt:match(arg)
       if data then
-        return expand((cosmo.fill(code(data), data)), filename)
+	return expand((cosmo.fill(tostring(code(data)), data)), filename)
       else
         filename = filename or ("string: " .. text)
         error("parse error on macro " .. name .. ", file " .. filename)

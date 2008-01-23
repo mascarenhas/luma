@@ -18,7 +18,6 @@ install: $(config_file)
 	mkdir -p $(LUA_DIR)/luma
 	cp src/luma.lua $(LUA_DIR)
 	cp src/re.lua $(LUA_DIR)/luma
-	cp src/cosmo.lua $(LUA_DIR)/luma
 	grep -l "^#!" samples/*.lua | xargs chmod +x
 
 install-rocks: install

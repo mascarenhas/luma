@@ -18,13 +18,13 @@ local defs = {
     return { chunk = chunk }
   end,
   build_try = function (chunk, tf1, tf2)
-    local try = { chunk = chunk, catch = {}, finally = {},
-     ok = luma.gensym(), err = luma.gensym()  }
+    local try = { chunk = chunk, catch = {}, finally = "",
+     falloff = luma.gensym(), values = luma.gensym()  }
     if tf1.var then
       try.catch = { tf1 }
-      if tf2 then try.finally = { tf2 } end
-    else
-      try.finally = { tf1 }
+      if tf2 then try.finally = tf2.chunk end
+    elseif tf1 then
+      try.finally = tf1.chunk
     end
     return try
   end,
@@ -33,20 +33,33 @@ local defs = {
 
 local code = [[
   do
-   local $ok, $err = pcall(function () $chunk end)
-   if $ok then
-     $finally[=[
-       $chunk
-     ]=]
-   else
-     $catch[=[
-     $ok, $err = pcall(function ($var) $chunk end, $err)
-     ]=] 
-     $finally[=[
-       $chunk
-     ]=]
-     if not $ok then error($err) end
-   end
+     local $falloff = {}
+     local $values = { pcall(function () 
+				do
+				   $chunk
+				end
+				return $falloff
+			     end) }
+     if $values[1] then
+	$finally
+	if $values[2] ~= $falloff then
+	   return unpack($values, 2)
+	end
+     else
+	$catch[=[
+        $values = { pcall(function ($var) 
+			     do
+				$chunk
+			     end
+			     return $falloff
+			  end, $values[2]) }
+        ]=]
+        $finally
+        if not $values[1] then error($values[2]) end
+	if $values[2] ~= $falloff then
+	   return unpack($values, 2)
+	end
+     end
   end
 ]]
 
