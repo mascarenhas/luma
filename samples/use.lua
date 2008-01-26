@@ -6,7 +6,7 @@ using [[
 
 from math import random, pow
 
-from template.cosmo import fill
+from cosmo import fill
 
 ]]
 

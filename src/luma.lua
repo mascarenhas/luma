@@ -1,6 +1,6 @@
 require"lpeg"
 local re = require"luma.re"
-local cosmo = require"template.cosmo"
+local cosmo = require"cosmo"
 
 module("luma", package.seeall)
 

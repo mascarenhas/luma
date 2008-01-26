@@ -14,7 +14,7 @@ description = {
   homepage = "http://www.lua.inf.puc-rio.br/~mascarenhas/luma"
 }
 
-dependencies = { "lpeg >= 0.7", "template" }
+dependencies = { "lpeg >= 0.7", "cosmo" }
 
 source = {
   url = "http://www.lua.inf.puc-rio.br/~mascarenhas/luma/luma-current.tar.gz"
