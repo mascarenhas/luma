@@ -64,7 +64,6 @@ macros can expand to macros
 \item Command line script, \emph{luma}, expands macros in files before running them
 \item \emph{require\_ for\_ syntax} macro require's a library in expansion time, so any
 macros defined by the library are available to the code that follows it
-\item Automaton's syntax is far from Lua's
 \item Similarity to Converge's \emph{DSL blocks}
 \end{itemize}
 
@@ -72,14 +71,15 @@ macros defined by the library are available to the code that follows it
 
 \begin{frame}[fragile]
 \frametitle{Defining \emph{automaton} - Syntax}
-A Luma macro needs a \emph{syntax}, a set extra \emph{definitions and builders}, and
+A Luma macro needs a \emph{syntax}, a set of extra \emph{definitions and builders}, and
 a \emph{code template}. The syntax for \emph{automaton}:
 \begin{verbatim}
 local syntax = [[
   aut <- _ state+ -> build_aut
   char <- ([']{[ ]}['] / {.}) _
   rule <- (char '->' _ {name} _) -> build_rule 
-  state <- ( {name} _ ':' _ rule+ -> {} {'accept'?} _ ) -> build_state
+  state <- ( {name} _ ':' _ rule* -> {} {'accept'?} _ ) 
+    -> build_state
 ]]
 \end{verbatim}
 Luma uses re.lua, and defines a few default rules that can be used by
@@ -146,17 +146,16 @@ local code = [[
     return $init($input)
   end)]]
 \end{verbatim}
-Macro hygiene is currently the macro programmer's responsibility. Also Cosmo
-supports iteration over list items.
+Macro hygiene is currently the macro programmer's responsibility.
 \end{frame}
 
 \begin{frame}[fragile]
 \frametitle{Using Lua's syntax}
 
-Defining macros that use a subset of Lua's syntax is easy, just use \emph{Leg}'s Lua parser. If
-Luma detects that Leg is present it modifies the parser so macro applications are legal Lua syntax.
+Defining macros that use a subset of Lua's syntax is possible, just use \emph{Leg}'s Lua parser. If
+Luma detects that Leg is present it modifies the parser so Luma's macro applications are legal Lua syntax.
 
-Example, list comprehensions:
+Example (list comprehensions):
 
 \begin{verbatim}
 x = L[[i | i <- 1,3]] -- x = {1, 2, 3}
@@ -189,15 +188,15 @@ local syntax = [[
 ]]
 \end{verbatim}
 
-The builders are straightforward, \emph{concat} concatenates all captures
+The builders are boilerplate, \emph{concat} concatenates all captures
 separated by whitespace, \emph{build\_ comp} creates a table with the expression,
 the \emph{for} part and a gensym for the final list.
 \end{frame}
 
 \begin{frame}[fragile]
 \frametitle{List comprehensions - Code}
-The code is very straightforward, as the expression and for parts are already
-in the correct Lua syntax:
+The \emph{expression} and \emph{for} parts are already in the correct Lua syntax, so the
+code is straightforward:
 
 \begin{verbatim}
 local code = [[
@@ -220,14 +219,14 @@ are used:
 
 \begin{verbatim}
 meta[[
-local function fact(n)
-  n = tonumber(n)
-  if n <= 1 then return 1 else return n * fact(n-1) end
-end
-luma.define("fact", "{number}", fact) 
+  local function fact(n)
+    n = tonumber(n)
+    if n<=1 then return 1 else return n*fact(n-1) end
+  end
+  luma.define("fact", "{number}", fact) 
 ]]
 
-print(fact[[3]])
+print(fact[[3]]) -- expands to print(6)
 \end{verbatim}
 
 If a macro is very simple you can use a function that returns
@@ -238,25 +237,20 @@ its expansion instead of a Cosmo template.
 \frametitle{Final Remarks and Issues}
 \begin{itemize}
 \item Currently Luma has several other examples: class definitions,
-try/catch/finally, inc, match/with using Lpeg, using, Python-like
-\emph{from module import symbol}, nor...
+try/catch/finally (with proper treatment of return, inc, 
+match/with using Lpeg, Python-like \emph{from module import symbol}, and others
 \item Most macros defined in less than 50 lines of code, the simplest
 in less than 10 lines, including templates
-\item But no satisfactory error reporting (just a generic parse error if
+\item But no good error reporting yet (just a generic parse error if
 a macro doesn't match)
-\item gensym is also brittle, uses \_\_\_ luma\_ sym\_\emph{n} convention,
-could lead to conflicts, and of course very easy to forget
-\item selector \verb|[[| data \verb|]]| syntax has the problem of not allowing
-an unbalanced \verb|]]| anywhere inside a macro application, needs a way to
-escape this string
+\item gensym doesn't solve the problem of user code shadowing identifiers the macro needs
 \end{itemize}
 \end{frame}
 
 \begin{frame}
 \begin{center}
-I'm open to questions and suggestions!
+Questions? Suggestions? Flames? :-)
 \end{center}
 \end{frame}
 
 \end{document}
-
