@@ -53,7 +53,6 @@
 <div id="content">
 
 
-
 <h2>Downloading and Installing</h2>
 
 <p>The easiest way of downloading and installing Luma is via <a href="http://luarocks.org">LuaRocks</a>.
@@ -61,9 +60,8 @@ Just install the <em>luma</em> rock from the standard LuaRocks repository. You c
 get the latest development version from the author's <a href="http://www.lua.inf.puc-rio.br/~mascarenhas/rocks">repository</a>,
 through the rock <em>luma-current</em>.</p>
 
-<p>If you don't use LuaRocks you can download Luma from the <a href="http://luaforge.net/projects/luma">LuaForge page</a>,
-and install via <code>configure &amp;&amp; make &amp;&amp; make install</code>. The development version is available from via
-<a href="http://darcs.org">darcs</a> from <a href="http://www.lua.inf.puc-rio.br/~mascarenhas/luma/current">here</a>.</p>
+<p>If you don't use LuaRocks you can download Luma from the <a href="http://github.com/mascarenhas/luma/downloads">Github downloads page</a>,
+and install via <code>configure &amp;&amp; make &amp;&amp; make install</code>. The development version is also available from Github, with <a href="http://github.com/mascarenhas/luma">this link</a>.</p>
 
 <h2>An Overview of Luma</h2>
 
@@ -99,7 +97,7 @@ has the form:</p>
   ]]
 </code></pre>
 
-<p>where the macro text can have balanced blocks of <code>\[\[</code> and <code>\]\]</code>. If Luma has no macro
+<p>where the macro text can have balanced blocks of <code>[[</code> and <code>]]</code>. If Luma has no macro
 registered with that selector it just leaves that application alone (in effect it expands to itself).
 This syntax for macro applications is not completely alien to Lua, as most macro applications will
 be valid Lua code (a function call with a long string), but also guarantees that all macro
@@ -136,7 +134,7 @@ macro to define and use a simple automaton:</p>
 
 <p>You execute this code by saving it to a file and calling the Luma driver script, <em>luma</em>, on it.
 The driver macroexpands the file and then supplies the expanded code to the Lua interpreter. The
-<code>require\_for\_syntax</code> macro requires a Lua module (in this case the module <code>automaton.lua</code>,
+<code>require_for_syntax</code> macro requires a Lua module (in this case the module <code>automaton.lua</code>,
 which will define the <em>automaton</em> macro) at expansion time, so any macros defined by the module
 are available when expanding the rest of the code.</p>
 
@@ -153,11 +151,11 @@ The macro's syntax codifies that in an LPEG pattern (a Lua string):</p>
   ]]
 </code></pre>
 
-<p>LPEG patterns extends regular PEG with captures: curly brackets (<code>\{\}</code>) around an pattern item
-tell LPEG to capture the text that matched that item, and a right arrow (<code>\-\&gt;</code>) tells LPEG
+<p>LPEG patterns extends regular PEG with captures: curly brackets (<code>{}</code>) around an pattern item
+tell LPEG to capture the text that matched that item, and a right arrow (<code>-&gt;</code>) tells LPEG
 to pass the captures of the pattern item to the left of the arrow to the function to the right (or collect
-the captures in a Lua table in the case of <code>\-\&gt;\{\}</code>. The functions are part of the optional set of defitions.
-Luma defines a few default expressions that can also be referenced in patterns: spaces and Lua comments (<code>\\\_</code>),
+the captures in a Lua table in the case of <code>-&gt;{}</code>. The functions are part of the optional set of defitions.
+Luma defines a few default expressions that can also be referenced in patterns: spaces and Lua comments (<code>_</code>),
 Lua identifiers (<code>name</code>), Lua numbers (<code>number</code>), and Lua strings (<code>string</code>). The first
 PEG production is always used to match the text (<code>aut</code> in the case of the pattern above).</p>
 
@@ -181,7 +179,7 @@ PEG production is always used to match the text (<code>aut</code> in the case of
 
 <p>This is regular Lua code. What these functions do is to put the pattern captures in a form
 suitable for use by the template. As Luma uses Cosmo this means tables and lists. The top-level
-function, <code>build\_aut</code>, builds the capture that is actually passed to Cosmo, so it also
+function, <code>build_aut</code>, builds the capture that is actually passed to Cosmo, so it also
 defines any names that the code will need to use for local variables so they won't clash
 with the names supplied by the user (in effect this is manual
 <a href="http://portal.acm.org/citation.cfm?id=319838.319859" title="Hygienic Macro Expansion">macro hygiene</a>).</p>
@@ -253,11 +251,11 @@ Leg is available) or a list elements which can be a string, an identifier, a num
 delimited by () or {}, if Leg is not available. Arguments can be accessed in the template by $1, $2, etc.,
 and you can iterate over them with $args[[ $value ]];</p>
 
-<p><strong>luma.gensym()</strong> - returns a pseudo-unique identifier (of the form <em>_</em>luma<em>sym</em><em>n</em>, where n is monotonic)</p>
+<p><strong>luma.gensym()</strong> - returns a pseudo-unique identifier (of the form ___luma_sym_<em>n</em>, where n is monotonic)</p>
 
 <h2>Default Macros</h2>
 
-<p><strong>require<em>for</em>syntax [[ <em>name</em> [, <em>name</em>] ]]</strong> - require's modules on during macro-expansion (these
+<p><strong>require_for_syntax [[ <em>name</em> [, <em>name</em>] ]]</strong> - require's modules on during macro-expansion (these
 modules are useful for defining new macros), expands to the empty string</p>
 
 <p><strong>meta [[ <em>chunk</em> ]]</strong> - executes <em>chunk</em> during macro-expansion, expands to the return value of <em>chunk</em></p>
@@ -266,6 +264,7 @@ modules are useful for defining new macros), expands to the empty string</p>
 
 <p>Please see the provided samples for examples of macros. Reading <a href="http://lpeg.luaforge.net" title="LPEG">LPEG's</a> and <a href="http://cosmo.luaforge.net" title="Cosmo">Cosmo's</a>
 documentation is also strongly recommended. </p>
+
 
 
 

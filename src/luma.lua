@@ -1,4 +1,4 @@
-require"lpeg"
+local lpeg = require"lpeg"
 local re = require"luma.re"
 local cosmo = require"cosmo"
 
@@ -11,7 +11,7 @@ local IGNORED, STRING, LONGSTRING, SHORTSTRING, NAME, NUMBER, BALANCED
 do
   local ok, parser = pcall(require, "leg.parser")
   if ok then
-    parser.rules.Args = re.compile("balanced <- '[[' ((&'[[' balanced) / (!']]' .))* ']]'") + 
+    parser.rules.Args = re.compile("balanced <- '[[' ((&'[[' balanced) / (!']]' .))* ']]'") +
       parser.rules.Args
   end
 end
@@ -43,7 +43,7 @@ do
                 (m.P"'" * ( (m.P'\\' * 1) + (1 - (m.S"'\n\r\f")) )^0 * m.P"'")
   LONGSTRING = long_brackets
   STRING = SHORTSTRING + LONGSTRING
- 
+
   BALANCED = re.compile[[
     balanced <- balanced_par / balanced_bra
     balanced_par <- '(' ([^(){}] / balanced)* ')'
@@ -70,8 +70,8 @@ function define(name, grammar, code, defs)
   defs = defs or {}
   re_defs = {}
   setmetatable(re_defs, { __index = function (t, k)
-                		      local v = defs[k]
-				      if not v then v = basic_rules[k] end
+                                      local v = defs[k]
+                                      if not v then v = basic_rules[k] end
                                       rawset(t, k, v)
                                       return v
                                     end })
@@ -79,14 +79,14 @@ function define(name, grammar, code, defs)
   if type(code) == "string" then
     code = cosmo.compile(code)
   end
-  macros[name] = { patt = patt, code = code } 
+  macros[name] = { patt = patt, code = code }
 end
 
 local lstring = loadstring
 
 function expand(text, filename)
   local macro_use = [=[
-    macro <- {name} _ {balanced} 
+    macro <- {name} _ {balanced}
     balanced <- '[[' ((&'[[' balanced) / (!']]' .))* ']]'
   ]=]
   local patt = re.compile(macro_use, basic_rules)
@@ -96,7 +96,7 @@ function expand(text, filename)
       local patt, code = macros[name].patt, macros[name].code
       local data, err = patt:match(arg)
       if data then
-	return expand((cosmo.fill(tostring(code(data)), data)), filename)
+        return expand((cosmo.fill(tostring(code(data)), data)), filename)
       else
         filename = filename or ("string: " .. text)
         error("parse error on macro " .. name .. ", file " .. filename)
@@ -162,7 +162,7 @@ function define_simple(name, code)
     exp = BALANCED + STRING + NAME + NUMBER
   end
   local syntax = [[
-    explist <- _ ({exp} _ (',' _ {exp} _)*) -> build_explist 
+    explist <- _ ({exp} _ (',' _ {exp} _)*) -> build_explist
   ]]
   local defs = {
     build_explist = function (...)
@@ -189,7 +189,7 @@ define("require_for_syntax",
          return ""
        end)
 
-define("meta", 
+define("meta",
        "{.*} -> build_chunk",
        function (c)
          return c() or ""

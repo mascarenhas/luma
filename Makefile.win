@@ -6,12 +6,4 @@ install:
 	copy src\luma.lua "$(LUA_DIR)"
 	copy src\re.lua "$(LUA_DIR)\luma"
 	copy bin\luma "$(BIN_DIR)"
-	copy bin\expand "$(BIN_DIR)\luma-expand"
-
-install-rocks: install
-	mkdir "$(PREFIX)\samples"
-	mkdir "$(PREFIX)\doc"
-	mkdir "$(PREFIX)\tests"
-	xcopy /E samples "$(PREFIX)\samples\"
-	xcopy /E doc "$(PREFIX)\doc\"
-	xcopy /E tests "$(PREFIX)\tests\"
+	copy bin\luma-expand "$(BIN_DIR)\luma-expand"

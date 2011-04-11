@@ -25,7 +25,7 @@ somewhere in your product or its documentation.</p>
 The implementation is not derived from licensed software.</p>
 
 <hr/>
-<p>Copyright &copy; 2007-2008 Fabio Mascarenhas.</p>
+<p>Copyright &copy; 2007-2011 Fabio Mascarenhas.</p>
 
 <p>Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation

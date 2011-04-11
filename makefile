@@ -12,7 +12,7 @@ $(config_file):
 install: $(config_file)
 	sed -e '1s,^#!.*,#!$(LUA_BIN),' bin/luma > $(BIN_DIR)/luma
 	chmod +x $(BIN_DIR)/luma
-	sed -e '1s,^#!.*,#!$(LUA_BIN),' bin/expand > $(BIN_DIR)/luma-expand
+	sed -e '1s,^#!.*,#!$(LUA_BIN),' bin/luma-expand > $(BIN_DIR)/luma-expand
 	chmod +x $(BIN_DIR)/luma-expand
 	mkdir -p $(LUA_DIR)
 	mkdir -p $(LUA_DIR)/luma
@@ -20,25 +20,8 @@ install: $(config_file)
 	cp src/re.lua $(LUA_DIR)/luma
 	grep -l "^#!" samples/*.lua | xargs chmod +x
 
-install-rocks: install
-	mkdir -p $(PREFIX)/samples
-	cp samples/*.lua $(PREFIX)/samples
-	mkdir -p $(PREFIX)/doc
-	cp -r doc/* $(PREFIX)/doc
-	mkdir -p $(PREFIX)/tests
-	cp -r tests/* $(PREFIX)/tests
-	echo "Go to $(PREFIX) for samples and docs!"
-
 test:
 	cd tests && luma test.lua
-
-dist:
-	darcs dist -d luma-current
-	mv luma-current.tar.gz ..
-
-gen_dist:
-	darcs push 139.82.100.4:public_html/luma/current
-	ssh 139.82.100.4 "cd public_html/luma/current && make dist"
 
 paper:
 	cd doc/paper && pandoc -f markdown -t latex -B luma-paper-header.tex \

@@ -1,6 +1,6 @@
 package = "luma"
 
-version = "current-1"
+version = "0.2-1"
 
 description = {
   summary = "Lpeg-based macro system for Lua",
@@ -14,20 +14,20 @@ description = {
   homepage = "http://www.lua.inf.puc-rio.br/~mascarenhas/luma"
 }
 
-dependencies = { "lpeg >= 0.7", "cosmo" }
+dependencies = { "lpeg >= 0.10", "cosmo" }
 
 source = {
-  url = "http://www.lua.inf.puc-rio.br/~mascarenhas/luma/luma-current.tar.gz"
+  url = "http://github.com/downloads/mascarenhas/luma/luma-0.2.tar.gz"
 }
 
 build = {
-   type = "make",
-   build_pass = true,
-   install_target = "install-rocks",
-   install_variables = {
-     PREFIX  = "$(PREFIX)",
-     LUA_BIN = "/usr/bin/env lua",
-     LUA_DIR = "$(LUADIR)",
-     BIN_DIR = "$(BINDIR)"
-   }
+   type = "builtin",
+   modules = {
+     luma = "src/luma.lua",
+     ["luma.re"] = "src/re.lua"
+   },
+   install = {
+     bin = { "bin/luma", "bin/luma-expand" }
+   },
+   copy_directories = { "doc", "samples", "tests" }
 }

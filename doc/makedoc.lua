@@ -1,4 +1,4 @@
-cosmo = require "luma.cosmo"
+cosmo = require "cosmo"
 require "markdown"
 
 local pages = {

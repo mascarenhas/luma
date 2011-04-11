@@ -5,9 +5,8 @@ Just install the *luma* rock from the standard LuaRocks repository. You can also
 get the latest development version from the author's [repository](http://www.lua.inf.puc-rio.br/~mascarenhas/rocks),
 through the rock *luma-current*.
 
-If you don't use LuaRocks you can download Luma from the [LuaForge page](http://luaforge.net/projects/luma),
-and install via `configure && make && make install`. The development version is available from via
-[darcs](http://darcs.org) from [here](http://www.lua.inf.puc-rio.br/~mascarenhas/luma/current).
+If you don't use LuaRocks you can download Luma from the [Github downloads page](http://github.com/mascarenhas/luma/downloads),
+and install via `configure && make && make install`. The development version is also available from Github, with [this link](http://github.com/mascarenhas/luma).
 
 ## An Overview of Luma ##
 
