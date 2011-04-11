@@ -17,7 +17,7 @@ description = {
 dependencies = { "lpeg >= 0.10", "cosmo" }
 
 source = {
-  url = "http://github.com/downloads/mascarenhas/luma/luma-0.2.tar.gz"
+  url = "http://cloud.github.com/downloads/mascarenhas/luma/luma-0.2.tar.gz"
 }
 
 build = {
